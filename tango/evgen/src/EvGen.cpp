@@ -241,6 +241,22 @@ void EvGen::init_device()
 	/*----- PROTECTED REGION ID(EvGen::init_device) ENABLED START -----*/
 	
 	//	Initialize device
+	*attr_enable_scalar_double_ro_read = false;
+	*attr_enable_scalar_double_rw_read = false;
+	*attr_enable_scalar_long_ro_read = false;
+	*attr_enable_scalar_long_rw_read = false;
+	*attr_enable_scalar_bool_ro_read = false;
+	*attr_enable_scalar_bool_rw_read = false;
+	*attr_enable_scalar_ulong64_ro_read = false;
+	*attr_enable_scalar_ulong64_rw_read = false;
+	*attr_enable_spectrum_double_ro_read = false;
+	*attr_enable_spectrum_double_rw_read = false;
+	*attr_enable_spectrum_long_ro_read = false;
+	*attr_enable_spectrum_long_rw_read = false;
+	*attr_enable_spectrum_bool_ro_read = false;
+	*attr_enable_spectrum_bool_rw_read = false;
+	*attr_enable_spectrum_ulong64_ro_read = false;
+	*attr_enable_spectrum_ulong64_rw_read = false;
 	if(defaultPeriod < 0)
 		defaultPeriod = 100000;
 	if(defaultNumberOfEvents < 0)
@@ -635,7 +651,7 @@ void EvGen::write_enable_scalar_double_ro(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_scalar_double_ro) ENABLED START -----*/
-	
+	*attr_enable_scalar_double_ro_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_scalar_double_ro
 }
@@ -673,7 +689,7 @@ void EvGen::write_enable_scalar_double_rw(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_scalar_double_rw) ENABLED START -----*/
-	
+	*attr_enable_scalar_double_rw_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_scalar_double_rw
 }
@@ -711,7 +727,7 @@ void EvGen::write_enable_scalar_long_ro(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_scalar_long_ro) ENABLED START -----*/
-	
+	*attr_enable_scalar_long_ro_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_scalar_long_ro
 }
@@ -749,7 +765,7 @@ void EvGen::write_enable_scalar_long_rw(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_scalar_long_rw) ENABLED START -----*/
-	
+	*attr_enable_scalar_long_rw_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_scalar_long_rw
 }
@@ -787,7 +803,7 @@ void EvGen::write_enable_scalar_bool_ro(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_scalar_bool_ro) ENABLED START -----*/
-	
+	*attr_enable_scalar_bool_ro_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_scalar_bool_ro
 }
@@ -825,7 +841,7 @@ void EvGen::write_enable_scalar_bool_rw(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_scalar_bool_rw) ENABLED START -----*/
-	
+	*attr_enable_scalar_bool_rw_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_scalar_bool_rw
 }
@@ -863,7 +879,7 @@ void EvGen::write_enable_scalar_ulong64_ro(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_scalar_ulong64_ro) ENABLED START -----*/
-	
+	*attr_enable_scalar_ulong64_ro_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_scalar_ulong64_ro
 }
@@ -901,7 +917,7 @@ void EvGen::write_enable_scalar_ulong64_rw(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_scalar_ulong64_rw) ENABLED START -----*/
-	
+	*attr_enable_scalar_ulong64_rw_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_scalar_ulong64_rw
 }
@@ -939,7 +955,7 @@ void EvGen::write_enable_spectrum_double_ro(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_spectrum_double_ro) ENABLED START -----*/
-	
+	*attr_enable_spectrum_double_ro_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_spectrum_double_ro
 }
@@ -977,7 +993,7 @@ void EvGen::write_enable_spectrum_double_rw(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_spectrum_double_rw) ENABLED START -----*/
-	
+	*attr_enable_spectrum_double_rw_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_spectrum_double_rw
 }
@@ -1015,7 +1031,7 @@ void EvGen::write_enable_spectrum_long_ro(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_spectrum_long_ro) ENABLED START -----*/
-	
+	*attr_enable_spectrum_long_ro_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_spectrum_long_ro
 }
@@ -1053,7 +1069,7 @@ void EvGen::write_enable_spectrum_long_rw(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_spectrum_long_rw) ENABLED START -----*/
-	
+	*attr_enable_spectrum_long_rw_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_spectrum_long_rw
 }
@@ -1091,7 +1107,7 @@ void EvGen::write_enable_spectrum_bool_ro(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_spectrum_bool_ro) ENABLED START -----*/
-	
+	*attr_enable_spectrum_bool_ro_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_spectrum_bool_ro
 }
@@ -1129,7 +1145,7 @@ void EvGen::write_enable_spectrum_bool_rw(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_spectrum_bool_rw) ENABLED START -----*/
-	
+	*attr_enable_spectrum_bool_rw_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_spectrum_bool_rw
 }
@@ -1167,7 +1183,7 @@ void EvGen::write_enable_spectrum_ulong64_ro(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_spectrum_ulong64_ro) ENABLED START -----*/
-	
+	*attr_enable_spectrum_ulong64_ro_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_spectrum_ulong64_ro
 }
@@ -1205,7 +1221,7 @@ void EvGen::write_enable_spectrum_ulong64_rw(Tango::WAttribute &attr)
 	Tango::DevBoolean	w_val;
 	attr.get_write_value(w_val);
 	/*----- PROTECTED REGION ID(EvGen::write_enable_spectrum_ulong64_rw) ENABLED START -----*/
-	
+	*attr_enable_spectrum_ulong64_rw_read = w_val;
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::write_enable_spectrum_ulong64_rw
 }
@@ -1223,7 +1239,7 @@ void EvGen::read_spectrum_double_ro(Tango::Attribute &attr)
 	DEBUG_STREAM << "EvGen::read_spectrum_double_ro(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(EvGen::read_spectrum_double_ro) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_spectrum_double_ro_read, 10000);
+	attr.set_value(attr_spectrum_double_ro_read, spectrumSize);
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::read_spectrum_double_ro
 }
@@ -1241,7 +1257,7 @@ void EvGen::read_spectrum_double_rw(Tango::Attribute &attr)
 	DEBUG_STREAM << "EvGen::read_spectrum_double_rw(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(EvGen::read_spectrum_double_rw) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_spectrum_double_rw_read, 10000);
+	attr.set_value(attr_spectrum_double_rw_read, spectrumSize);
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::read_spectrum_double_rw
 }
@@ -1282,7 +1298,7 @@ void EvGen::read_spectrum_long_ro(Tango::Attribute &attr)
 	DEBUG_STREAM << "EvGen::read_spectrum_long_ro(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(EvGen::read_spectrum_long_ro) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_spectrum_long_ro_read, 10000);
+	attr.set_value(attr_spectrum_long_ro_read, spectrumSize);
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::read_spectrum_long_ro
 }
@@ -1300,7 +1316,7 @@ void EvGen::read_spectrum_long_rw(Tango::Attribute &attr)
 	DEBUG_STREAM << "EvGen::read_spectrum_long_rw(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(EvGen::read_spectrum_long_rw) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_spectrum_long_rw_read, 10000);
+	attr.set_value(attr_spectrum_long_rw_read, spectrumSize);
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::read_spectrum_long_rw
 }
@@ -1341,7 +1357,7 @@ void EvGen::read_spectrum_bool_ro(Tango::Attribute &attr)
 	DEBUG_STREAM << "EvGen::read_spectrum_bool_ro(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(EvGen::read_spectrum_bool_ro) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_spectrum_bool_ro_read, 10000);
+	attr.set_value(attr_spectrum_bool_ro_read, spectrumSize);
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::read_spectrum_bool_ro
 }
@@ -1359,7 +1375,7 @@ void EvGen::read_spectrum_bool_rw(Tango::Attribute &attr)
 	DEBUG_STREAM << "EvGen::read_spectrum_bool_rw(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(EvGen::read_spectrum_bool_rw) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_spectrum_bool_rw_read, 10000);
+	attr.set_value(attr_spectrum_bool_rw_read, spectrumSize);
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::read_spectrum_bool_rw
 }
@@ -1400,7 +1416,7 @@ void EvGen::read_spectrum_ulong64_ro(Tango::Attribute &attr)
 	DEBUG_STREAM << "EvGen::read_spectrum_ulong64_ro(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(EvGen::read_spectrum_ulong64_ro) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_spectrum_ulong64_ro_read, 10000);
+	attr.set_value(attr_spectrum_ulong64_ro_read, spectrumSize);
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::read_spectrum_ulong64_ro
 }
@@ -1418,7 +1434,7 @@ void EvGen::read_spectrum_ulong64_rw(Tango::Attribute &attr)
 	DEBUG_STREAM << "EvGen::read_spectrum_ulong64_rw(Tango::Attribute &attr) entering... " << endl;
 	/*----- PROTECTED REGION ID(EvGen::read_spectrum_ulong64_rw) ENABLED START -----*/
 	//	Set the attribute value
-	attr.set_value(attr_spectrum_ulong64_rw_read, 10000);
+	attr.set_value(attr_spectrum_ulong64_rw_read, spectrumSize);
 	
 	/*----- PROTECTED REGION END -----*/	//	EvGen::read_spectrum_ulong64_rw
 }

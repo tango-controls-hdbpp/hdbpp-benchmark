@@ -68,7 +68,10 @@ void pushthread::run(void *)
 	while (!abortflag)
 	{
 		while(_device->get_state() != Tango::RUNNING)
+		{
 			usleep(_device->period);
+			counter = 0;
+		}
 		
 		gettimeofday(&now, NULL);
 		//simple pseudo random values:
@@ -133,6 +136,8 @@ void pushthread::run(void *)
 		{
 			INFO_STREAM << "pushthread::" << __func__ << ": exception pushing events: " << e.errors[0].desc << endl;
 		}
+		if(counter >= _device->number_of_events)
+			_device->set_state(Tango::OFF);
 		usleep(_device->period);
 
 	}
