@@ -99,37 +99,37 @@ void pushthread::run(void *)
 
 		try
 		{
-			if(_device->attr_enable_scalar_double_ro_read)
+			if(*_device->attr_enable_scalar_double_ro_read)
 				_device->push_archive_event("scalar_double_ro",_device->attr_scalar_double_ro_read);
-			if(_device->attr_enable_scalar_double_rw_read)
+			if(*_device->attr_enable_scalar_double_rw_read)
 				_device->push_archive_event("scalar_double_rw",_device->attr_scalar_double_rw_read);
-			if(_device->attr_enable_scalar_long_ro_read)
+			if(*_device->attr_enable_scalar_long_ro_read)
 				_device->push_archive_event("scalar_long_ro",_device->attr_scalar_long_ro_read);
-			if(_device->attr_enable_scalar_long_rw_read)
+			if(*_device->attr_enable_scalar_long_rw_read)
 				_device->push_archive_event("scalar_long_rw",_device->attr_scalar_long_rw_read);
-			if(_device->attr_enable_scalar_bool_ro_read)
+			if(*_device->attr_enable_scalar_bool_ro_read)
 				_device->push_archive_event("scalar_bool_ro",_device->attr_scalar_bool_ro_read);
-			if(_device->attr_enable_scalar_bool_rw_read)
+			if(*_device->attr_enable_scalar_bool_rw_read)
 				_device->push_archive_event("scalar_bool_rw",_device->attr_scalar_bool_rw_read);
-			if(_device->attr_enable_scalar_ulong64_ro_read)
+			if(*_device->attr_enable_scalar_ulong64_ro_read)
 				_device->push_archive_event("scalar_ulong64_ro",_device->attr_scalar_ulong64_ro_read);
-			if(_device->attr_enable_scalar_ulong64_rw_read)
+			if(*_device->attr_enable_scalar_ulong64_rw_read)
 				_device->push_archive_event("scalar_ulong64_rw",_device->attr_scalar_ulong64_rw_read);
-			if(_device->attr_enable_spectrum_double_ro_read)
+			if(*_device->attr_enable_spectrum_double_ro_read)
 				_device->push_archive_event("spectrum_double_ro",_device->attr_spectrum_double_ro_read,_device->spectrumSize);
-			if(_device->attr_enable_spectrum_double_rw_read)
+			if(*_device->attr_enable_spectrum_double_rw_read)
 				_device->push_archive_event("spectrum_double_rw",_device->attr_spectrum_double_rw_read,_device->spectrumSize);
-			if(_device->attr_enable_spectrum_long_ro_read)
+			if(*_device->attr_enable_spectrum_long_ro_read)
 				_device->push_archive_event("spectrum_long_ro",_device->attr_spectrum_long_ro_read,_device->spectrumSize);
-			if(_device->attr_enable_spectrum_long_rw_read)
+			if(*_device->attr_enable_spectrum_long_rw_read)
 				_device->push_archive_event("spectrum_long_rw",_device->attr_spectrum_long_rw_read,_device->spectrumSize);
-			if(_device->attr_enable_spectrum_bool_ro_read)
+			if(*_device->attr_enable_spectrum_bool_ro_read)
 				_device->push_archive_event("spectrum_bool_ro",_device->attr_spectrum_bool_ro_read,_device->spectrumSize);
-			if(_device->attr_enable_spectrum_bool_rw_read)
+			if(*_device->attr_enable_spectrum_bool_rw_read)
 				_device->push_archive_event("spectrum_bool_rw",_device->attr_spectrum_bool_rw_read,_device->spectrumSize);
-			if(_device->attr_enable_spectrum_ulong64_ro_read)
+			if(*_device->attr_enable_spectrum_ulong64_ro_read)
 				_device->push_archive_event("spectrum_ulong64_ro",_device->attr_spectrum_ulong64_ro_read,_device->spectrumSize);
-			if(_device->attr_enable_spectrum_ulong64_rw_read)
+			if(*_device->attr_enable_spectrum_ulong64_rw_read)
 				_device->push_archive_event("spectrum_ulong64_rw",_device->attr_spectrum_ulong64_rw_read,_device->spectrumSize);
 		}
 		catch(Tango::DevFailed &e)
