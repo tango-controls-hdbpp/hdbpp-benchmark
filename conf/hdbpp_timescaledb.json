@@ -1,0 +1,143 @@
+{
+    "_version": 1,
+    "_source": "ConfigInjectorDiag.xls",
+    "_title": "hdbpp mysql innodb test",
+    "_date": "2020-07-07 14:45:04",
+
+    "servers": {
+        "hdbppcm-srv/01": {
+            "HdbConfigurationManager": {
+                "archiving/hdbppmanager/0": {
+                    "properties": {
+                        "ArchiverList": [
+                            "archiving/hdbppsubscriber/0"
+                        ]
+                    }
+                }
+            }
+        },
+        "hdbppes-srv/01": {
+            "HdbEventSubscriber": {
+                "archiving/hdbppsubscriber/0": {
+                    "properties": {
+                        "AttributeList": [
+                            ""
+                        ]
+                    }
+                }
+            }
+        },
+        "evgen-srv/01": {
+            "EvGen": {
+                "archiving/evgen/0": {
+                    "properties": {
+                        "SpectrumSize": ["1000"],
+                        "DefaultPeriod": ["100000"],
+                        "DefaultNumberOfEvents": ["10000"]
+                    }
+                },
+		"archiving/evgen/1": {
+                    "properties": {
+                        "SpectrumSize": ["1000"],
+                        "DefaultPeriod": ["100000"],
+                        "DefaultNumberOfEvents": ["10000"]
+                    }
+                },
+		"archiving/evgen/2": {
+                    "properties": {
+                        "SpectrumSize": ["1000"],
+                        "DefaultPeriod": ["100000"],
+                        "DefaultNumberOfEvents": ["10000"]
+                    }
+                },
+		"archiving/evgen/3": {
+                    "properties": {
+                        "SpectrumSize": ["1000"],
+                        "DefaultPeriod": ["100000"],
+                        "DefaultNumberOfEvents": ["10000"]
+                    }
+                },
+		"archiving/evgen/4": {
+                    "properties": {
+                        "SpectrumSize": ["1000"],
+                        "DefaultPeriod": ["100000"],
+                        "DefaultNumberOfEvents": ["10000"]
+                    }
+                },
+		"archiving/evgen/5": {
+                    "properties": {
+                        "SpectrumSize": ["1000"],
+                        "DefaultPeriod": ["100000"],
+                        "DefaultNumberOfEvents": ["10000"]
+                    }
+                },
+		"archiving/evgen/6": {
+                    "properties": {
+                        "SpectrumSize": ["1000"],
+                        "DefaultPeriod": ["100000"],
+                        "DefaultNumberOfEvents": ["10000"]
+                    }
+                },
+		"archiving/evgen/7": {
+                    "properties": {
+                        "SpectrumSize": ["1000"],
+                        "DefaultPeriod": ["100000"],
+                        "DefaultNumberOfEvents": ["10000"]
+                    }
+                },
+		"archiving/evgen/8": {
+                    "properties": {
+                        "SpectrumSize": ["1000"],
+                        "DefaultPeriod": ["100000"],
+                        "DefaultNumberOfEvents": ["10000"]
+                    }
+                },
+		"archiving/evgen/9": {
+                    "properties": {
+                        "SpectrumSize": ["1000"],
+                        "DefaultPeriod": ["100000"],
+                        "DefaultNumberOfEvents": ["10000"]
+                    }
+                }
+            }
+        }
+    },
+    "classes": {
+        "HdbConfigurationManager": {
+            "properties": {
+                "LibConfiguration": [
+                    "libname=libhdb++timescale.so",
+                    "connect_string=user=hdb_event_sub password=hdbpp host=ghiozzo port=5432 dbname=hdb",
+                    "logging_level=error",
+                    "log_file=false",
+                    "log_console=false"
+                ],
+                "MaxSearchSize": ["1000"]
+            }
+        },
+        "HdbEventSubscriber": {
+            "properties": {
+                "CheckPeriodicTimeoutDelay": ["90"],
+                "ContextsList": [
+                    "ALWAYS:always stored",
+                    "RUN:stored during run",
+                    "SHUTDOWN:stored during shutdown",
+                    "SERVICE:stored during maintenance activities",
+                    "MDT: Machine Dedicated Time.\nOperation and Physic tests.",
+                    "TODO: Temporarily disabled due to configuration issue",
+                    "DISABLED: context for attributes not to be archived"
+                ],
+                "DefaultStrategy": ["ALWAYS"],
+                "LibConfiguration": [
+                    "libname=libhdb++timescale.so",
+                    "connect_string=user=postgres password=hdbpp host=ghiozzo port=5432 dbname=hdb",
+                    "logging_level=error",
+                    "log_file=false",
+                    "log_console=false"
+                ],
+                "StatisticsTimeWindow": ["60"],
+                "SubscribeRetryPeriod": ["60"]
+            }
+        }
+    }
+}

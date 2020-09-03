@@ -1,0 +1,171 @@
+version: '3.8'
+services:
+  tangodb:
+    image: nexus.engageska-portugal.pt/ska-docker/tango-db:latest
+    container_name: tangodb
+    network_mode: ${NETWORK_MODE}
+    ports:
+    - "${TANGODB_PORT}:3306"
+    environment:
+    - MYSQL_ROOT_PASSWORD=secret
+    - MYSQL_DATABASE=tango
+    - MYSQL_USER=tango
+    - MYSQL_PASSWORD=tango
+    restart: on-failure
+
+  databaseds:
+    image: nexus.engageska-portugal.pt/ska-docker/tango-cpp:latest
+    container_name: databaseds
+    network_mode: ${NETWORK_MODE}
+    ports:
+    - "10000:10000"
+    depends_on:
+    - tangodb
+    environment:
+    - MYSQL_HOST=${TANGODB_HOST}:${TANGODB_PORT}
+    - MYSQL_DATABASE=tango
+    - MYSQL_USER=tango
+    - MYSQL_PASSWORD=tango
+    - TANGO_HOST=${TANGO_HOST}
+#    entrypoint:
+#    - /usr/local/bin/wait-for-it.sh ${TANGODB_HOST}:${TANGODB_PORT} --timeout=30 --strict--
+#    - /usr/local/bin/DataBaseds "2" -ORBendPoint giop:tcp::10000
+    command:
+      sh -c "sleep 30 && /usr/local/bin/wait-for-it.sh ${TANGODB_HOST}:${TANGODB_PORT} --timeout=30 --strict --
+             sleep 10 && /usr/local/bin/DataBaseds "2" -ORBendPoint giop:tcp::10000"
+    restart: always
+
+  dsconfig:
+    image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
+    container_name: dsconfig
+    network_mode: ${NETWORK_MODE}
+    depends_on:
+      - databaseds
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "sleep 30 && wait-for-it.sh ${TANGO_HOST} --timeout=300 --strict --
+             sleep 10 && json2tango -w -a -u /hdbpp-conf/hdbpp_mysql_innodb.json &&
+             sleep infinity"
+    volumes:
+      - ../../conf:/hdbpp-conf
+#    restart: on-failure
+
+  hdbpp-mysql-innodb:
+    image: hdbpp-mysql-innodb:latest
+    container_name: hdbpp-mysql-innodb
+    network_mode: ${NETWORK_MODE}
+    volumes:
+#    - /mysql-data/hdbpp-mysql-innodb-data:/var/lib/mysql
+    - hdbpp-mysql-innodb-data:/var/lib/mysql
+    ports:
+    - "3306:3306"
+    - "33060:33060"
+    environment:
+    - MYSQL_ROOT_PASSWORD=secret
+    command:
+      --innodb_buffer_pool_size=128G
+      --innodb_buffer_pool_instances=8
+      --innodb_write_io_threads=8
+      --innodb_doublewrite=0
+      --innodb_log_file_size=512M
+      --innodb_flush_log_at_trx_commit=2
+      --transaction_isolation='READ-UNCOMMITTED'
+
+  hdbpp-cm:
+    image: tango-hdbpp:latest
+    container_name: hdbpp-cm
+    network_mode: ${NETWORK_MODE}
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    depends_on:
+    - databaseds
+    - dsconfig
+    - hdbpp-mysql-innodb
+    command: >
+      /bin/bash -c "sleep 35 && 
+        wait-for-it.sh ${HDBPP_HOST} --timeout=300 --strict --
+        wait-for-it.sh ${TANGO_HOST} --timeout=300 --strict --
+        sleep 10 && hdbppcm-srv 01"
+
+  hdbpp-es:
+    image: tango-hdbpp:latest
+    container_name: hdbpp-es
+    network_mode: ${NETWORK_MODE}
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    depends_on:
+    - databaseds
+    - dsconfig
+    - hdbpp-mysql-innodb
+    - evgen
+    command: >
+      /bin/bash -c "sleep 35 &&
+        wait-for-it.sh ${HDBPP_HOST} --timeout=300 --strict --
+        wait-for-it.sh ${TANGO_HOST} --timeout=300 --strict --
+        sleep 10 && hdbppes-srv 01 -v2"
+
+  evgen:
+    image: tango-evgen:latest
+    container_name: evgen
+    network_mode: ${NETWORK_MODE}
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    depends_on:
+    - databaseds
+    - dsconfig
+    command: >
+      /bin/bash -c "sleep 35 &&
+        wait-for-it.sh ${TANGO_HOST} --timeout=300 --strict --
+        sleep 10 && evgen-srv 01"
+
+  hdbppconfig:
+    image: tango-hdbppconfig:latest
+    container_name: hdbppconfig
+    network_mode: ${NETWORK_MODE}
+    depends_on:
+      - evgen
+      - hdbpp-es
+      - hdbpp-cm
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "sleep 40 &&
+        wait-for-it.sh ${HDBPP_HOST} --timeout=300 --strict --
+        wait-for-it.sh ${TANGO_HOST} --timeout=300 --strict --
+        sleep 10 && /usr/src/app/hdbppconfig.py --device=archiving/hdbppmanager/0 --archiver=archiving/hdbppsubscriber/0 --file=/hdbpp-conf/hdbpp_evgen.conf &&
+        sleep infinity"
+    volumes:
+      - ../../conf:/hdbpp-conf
+#    restart: on-failure
+
+  hdbpp-test-insertion:
+    image: hdbpp-test-insertion:latest
+    container_name: hdbpp-test-insertion
+    network_mode: ${NETWORK_MODE}
+    depends_on:
+      - evgen
+      - hdbpp-es
+      - hdbpp-cm
+      - hdbppconfig
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "sleep 250 &&
+        wait-for-it.sh ${HDBPP_HOST} --timeout=300 --strict --
+        wait-for-it.sh ${TANGO_HOST} --timeout=300 --strict --
+        sleep 10 && /usr/src/app/hdbpp-test-insertion.py --type long --scalartype scalar --rwtype ro --archiver archiving/hdbppsubscriber/0 --evgen archiving/evgen/ --evgennum 10 --period 30000 --number 3000 --file /hdbpp-conf/hdbpp_mysql_innodb &&
+        sleep infinity"
+    volumes:
+      - ../../conf:/hdbpp-conf
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /mysql-data/hdbpp-mysql-innodb-data:/data
+#    restart: on-failure
+
+volumes:
+    hdbpp-mysql-innodb-data:
+      driver: local
+      driver_opts:
+        o: bind
+        type: none
+        device: /mysql-data/hdbpp-mysql-innodb-data
