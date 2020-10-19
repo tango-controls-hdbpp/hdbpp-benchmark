@@ -12,7 +12,7 @@ RUN apt-get update && \
         libpq-dev \
         libmariadb-dev-compat libmariadb-dev
 
-RUN git clone --depth 1 https://github.com/tango-controls-hdbpp/libhdbpp.git
+RUN git clone -b v2.0.0 --depth 1 https://github.com/tango-controls-hdbpp/libhdbpp.git
 
 RUN cd libhdbpp \
  && mkdir build \
