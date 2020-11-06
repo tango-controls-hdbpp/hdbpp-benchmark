@@ -12,16 +12,16 @@ RUN apt-get update && \
         libpq-dev \
         libmariadb-dev-compat libmariadb-dev
 
-RUN git clone -b v2.0.0 --depth 1 https://github.com/tango-controls-hdbpp/libhdbpp.git
+#RUN git clone -b project-build --depth 1 https://github.com/tango-controls-hdbpp/libhdbpp.git
 
-RUN cd libhdbpp \
- && mkdir build \
- && cd build \
- && cmake ..  \
- && make -j4 \
- && make install
+#RUN cd libhdbpp \
+# && mkdir build \
+# && cd build \
+# && cmake ..  \
+# && make -j4 \
+# && make install
 
-RUN git clone -b project-build2 --depth 1 --recurse-submodules https://github.com/tango-controls-hdbpp/libhdbpp-timescale.git
+RUN git clone -b project-build3 --depth 1 --recurse-submodules https://github.com/tango-controls-hdbpp/libhdbpp-timescale.git
 
 
 RUN cd libhdbpp-timescale \
@@ -31,7 +31,7 @@ RUN cd libhdbpp-timescale \
  && make -j4 \
  && make install
 
-RUN git clone -b libhdbpp2 --depth 1 https://github.com/tango-controls-hdbpp/libhdbpp-mysql.git
+RUN git clone -b batch_insert --depth 1 https://github.com/tango-controls-hdbpp/libhdbpp-mysql.git
 
 RUN cd libhdbpp-mysql \
  && mkdir build \
@@ -40,12 +40,13 @@ RUN cd libhdbpp-mysql \
  && make -j4 \
  && make install
 
-RUN git clone -b integrated-build --depth 1 https://github.com/tango-controls-hdbpp/hdbpp-es.git
+RUN git clone -b batch_insert_support --depth 1 https://github.com/tango-controls-hdbpp/hdbpp-es.git
 
 RUN cd hdbpp-es \
  && mkdir build \
  && cd build \
- && cmake ..  \
+ && cmake -DFETCH_LIBHDBPP=ON -DLIBHDBPP_BACKEND=libhdbpp -DFETCH_LIBHDBPP_TAG=project-build ..  \
+ #&& cmake -DFETCH_LIBHDBPP=ON -DLIBHDBPP_BACKEND=mysql -DFETCH_LIBHDBPP_TAG=batch_insert ..  \
  && make -j4 \
  && make install
 

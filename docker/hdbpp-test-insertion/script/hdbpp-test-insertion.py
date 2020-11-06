@@ -184,8 +184,9 @@ def docker_stats(timestamp):
 		memlog(metric,writeio,timestamp)
 
 
-def start_test(evgen,evgennum,archiver,period,number):
+def start_test(evgen,evgennum,archiver,archivernum,period,number):
 	edevs=[]
+	adevs=[]
 	for ii in range(evgennum):
 		devname = '{}{}'.format(evgen, ii)
 		print ('Start test with evgen=',devname)
@@ -194,11 +195,13 @@ def start_test(evgen,evgennum,archiver,period,number):
 		except (DevFailed,ConnectionFailed,EventSystemFailed) as e:
 			print ('ERROR connecting proxy(',devname,'): ',e[0]['desc'])
 			sys.exit(-1)
-	try:
-		adev = DeviceProxy(archiver)
-	except (DevFailed,ConnectionFailed,EventSystemFailed) as e:
-		print ('ERROR connecting proxy(',archiver,'): ',e[0]['desc'])
-		sys.exit(-1)
+	for ii in range(archivernum):
+		devname = '{}{}'.format(archiver, ii)
+		try:
+			adevs.append(DeviceProxy(devname))
+		except (DevFailed,ConnectionFailed,EventSystemFailed) as e:
+			print ('ERROR connecting proxy(',devname,'): ',e[0]['desc'])
+			sys.exit(-1)
 	disk_start = shutil.disk_usage('/data').used
 	time_start = int(time.time())
 	for ed in edevs:
@@ -221,8 +224,11 @@ def start_test(evgen,evgennum,archiver,period,number):
 			for ed in edevs:
 				statrunning = statrunning and (DevState.RUNNING == ed.read_attribute('State').value)
 			while statrunning:
-				pend = adev.read_attribute('AttributePendingNumber').value
-				max_pend = adev.read_attribute('AttributeMaxPendingNumber').value
+				pend=0
+				max_pend=0
+				for ad in adevs:
+					pend = pend + ad.read_attribute('AttributePendingNumber').value
+					max_pend = max_pend + ad.read_attribute('AttributeMaxPendingNumber').value
 				timestamp = int(time.time())
 				#print('Looping with period=',period,' pending number=', pend, ' max pending number=',max_pend)
 				memlog('AttributePendingNumber',pend,timestamp)
@@ -248,16 +254,17 @@ def start_test(evgen,evgennum,archiver,period,number):
 			print('With period=',period,'us, EventRate=', evgennum*1000000/period,' max pending number=',max_pend,'(',pend,') max_count=',max_count)
 			mean_freq=0
 			num_freq=0
-			for freq in adev.read_attribute('AttributeRecordFreqList').value:
-				if freq > 0:
-					mean_freq += freq
-					num_freq += 1
+			tot_ev=0
+			for ad in adevs:
+				for freq in ad.read_attribute('AttributeRecordFreqList').value:
+					if freq > 0:
+						mean_freq += freq
+						num_freq += 1
+				for ev in ad.read_attribute('AttributeEventNumberList').value:
+					if ev > 1:
+						tot_ev += ev
 			if num_freq != 0:
 				mean_freq = mean_freq / num_freq
-			tot_ev=0
-			for ev in adev.read_attribute('AttributeEventNumberList').value:
-				if ev > 1:
-					tot_ev += ev
 
 			arch_num = 'Archived:  FREQ={}ev/10s  COUNT={}\n'.format(mean_freq, tot_ev)
 			print(arch_num)
@@ -289,7 +296,7 @@ def main(options):
 
 	enable_types(options.evgen,options.evgennum,options.scalartype,options.atype,options.rwtype)
 
-	start_test(options.evgen,options.evgennum,options.archiver,options.period,options.number)
+	start_test(options.evgen,options.evgennum,options.archiver,options.archivernum,options.period,options.number)
 
 	printlog(options.fileprefix, options)
 
@@ -308,6 +315,8 @@ if __name__ == '__main__':
 		help = "Number of EvGen server")
 	parser.add_option("-a", "--archiver", action = "store", type = "string", dest = "archiver",
 		help = "Tango name of HdbEventSubscriber server")
+	parser.add_option("-r", "--archivernum", action = "store", type = "int", dest = "archivernum",
+		help = "Number of EvGen server")
 	parser.add_option("-p", "--period", action = "store", type = "int", dest = "period",
 		help = "EvGen events period")
 	parser.add_option("-n", "--number", action = "store", type = "int", dest = "number",
