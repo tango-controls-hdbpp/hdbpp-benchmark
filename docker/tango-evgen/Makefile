@@ -10,6 +10,7 @@ build-files/.built: Dockerfile
 lint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
+build: image
 image: build-files/.built
 
 push: build-files/.built
@@ -24,4 +25,4 @@ endif
 clean:
 	rm -fr build-files
 
-.PHONY: default image clean
+.PHONY: default build image clean
