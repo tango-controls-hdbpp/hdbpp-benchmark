@@ -221,7 +221,7 @@
                     "log_file=false",
                     "log_console=false"
                 ],
-                "StatisticsTimeWindow": ["60"],
+                "StatisticsTimeWindow": ["10"],
                 "SubscribeRetryPeriod": ["60"]
             }
         }
