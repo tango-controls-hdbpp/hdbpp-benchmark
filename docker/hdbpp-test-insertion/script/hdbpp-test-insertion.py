@@ -226,9 +226,11 @@ def start_test(evgen,evgennum,archiver,archivernum,period,number):
 			while statrunning:
 				pend=0
 				max_pend=0
+				arch_err=0
 				for ad in adevs:
 					pend = pend + ad.read_attribute('AttributePendingNumber').value
 					max_pend = max_pend + ad.read_attribute('AttributeMaxPendingNumber').value
+					arch_err = arch_err + ad.read_attribute('AttributeNokNumber').value
 				timestamp = int(time.time())
 				#print('Looping with period=',period,' pending number=', pend, ' max pending number=',max_pend)
 				memlog('AttributePendingNumber',pend,timestamp)
@@ -244,8 +246,14 @@ def start_test(evgen,evgennum,archiver,archivernum,period,number):
 					max_count = 0
 					#old_max_pend = pend
 					#max_pend = pend
+				if arch_err > 5:
+					min_period = period
+					error = 1
+					print('Archiver errors=',arch_err,' exiting test')
+					break
 				if max_count >= 6:
 					error = 1
+					print('With period=',period,'us, max pending number=',max_pend,'(',pend,') exiting test')
 					break
 				time.sleep(10)
 				for ed in edevs:
@@ -272,6 +280,7 @@ def start_test(evgen,evgennum,archiver,archivernum,period,number):
 			#to have constant time, increase number
 			number = number / 0.9
 			if period < 1000:
+				print('Exiting for small period=',period,'us, max pending number=',max_pend,'(',pend,') increasing max_count=',max_count)
 				break
 			if pend < 0.5*max_pend:
 				min_period = period
