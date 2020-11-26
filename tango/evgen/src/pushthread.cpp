@@ -32,6 +32,7 @@ static inline timespec timespec_diff(struct timespec *a, struct timespec *b)
 	if(result.tv_sec < 0)
 	{
 		result.tv_sec = 0;
+		result.tv_nsec = 1000;
 	}
 	return result;
 }
@@ -85,7 +86,7 @@ void pushthread::run(void *)
 	while (!abortflag)
 	{
 		period.tv_sec = _device->period / 1000000;
-		period.tv_sec = (_device->period % 1000000) * 1000;
+		period.tv_nsec = (_device->period % 1000000) * 1000;
 		while(_device->get_state() != Tango::RUNNING)
 		{
 			nanosleep(&period, NULL);
