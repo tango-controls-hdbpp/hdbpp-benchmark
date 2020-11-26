@@ -33,6 +33,7 @@ static inline timespec timespec_diff(struct timespec *a, struct timespec *b)
 	{
 		result.tv_sec = 0;
 	}
+	return result;
 }
 
 //+------------------------------------------------------------------
