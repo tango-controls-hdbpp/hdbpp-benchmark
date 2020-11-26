@@ -19,6 +19,22 @@
 namespace EvGen_ns
 {
 
+static inline timespec timespec_diff(struct timespec *a, struct timespec *b)
+{
+	struct timespec result;
+	result.tv_sec  = a->tv_sec  - b->tv_sec;
+	result.tv_nsec = a->tv_nsec - b->tv_nsec;
+	if (result.tv_nsec < 0)
+	{
+		--result.tv_sec;
+		result.tv_nsec += 1000000000L;
+	}
+	if(result.tv_sec < 0)
+	{
+		result.tv_sec = 0;
+	}
+}
+
 //+------------------------------------------------------------------
 //
 //	method:			pushthread::pushthread()
@@ -54,8 +70,8 @@ pushthread::~pushthread()
 void pushthread::run(void *)
 {
 	DEBUG_STREAM << "pushthread::" << __func__ << ": running... " << endl;
-	timeval now;
-	gettimeofday(&now, NULL);
+	timespec now, start_push, end_push, period, time_to_sleep;
+	clock_gettime(CLOCK_MONOTONIC, &now);
 	uint64_t counter=now.tv_sec;
 	double old_doubleattr1 = 0;
 	double old_doubleattr2 = 0;
@@ -67,15 +83,17 @@ void pushthread::run(void *)
 
 	while (!abortflag)
 	{
+		period.tv_sec = _device->period / 1000000;
+		period.tv_sec = (_device->period % 1000000) * 1000;
 		while(_device->get_state() != Tango::RUNNING)
 		{
-			usleep(_device->period);
+			nanosleep(&period, NULL);
 			counter = 0;
 		}
 		
-		gettimeofday(&now, NULL);
+		clock_gettime(CLOCK_MONOTONIC, &start_push);
 		//simple pseudo random values:
-		*(_device->attr_scalar_double_ro_read) = (double)counter/now.tv_usec;
+		*(_device->attr_scalar_double_ro_read) = (double)counter/start_push.tv_nsec;
 		*(_device->attr_scalar_double_rw_read) = *(_device->attr_scalar_double_ro_read);
 		*(_device->attr_scalar_long_ro_read) = counter;
 		*(_device->attr_scalar_long_rw_read) = *(_device->attr_scalar_long_ro_read);
@@ -85,7 +103,7 @@ void pushthread::run(void *)
 		*(_device->attr_scalar_bool_rw_read) = *(_device->attr_scalar_bool_ro_read);
 		for(size_t i=0; i<_device->spectrumSize; ++i)
 		{
-			(_device->attr_spectrum_double_ro_read)[i] = (double)(counter+i)/now.tv_usec;
+			(_device->attr_spectrum_double_ro_read)[i] = (double)(counter+i)/start_push.tv_nsec;
 			(_device->attr_spectrum_double_rw_read)[i] = (_device->attr_spectrum_double_ro_read)[i];
 			(_device->attr_spectrum_long_ro_read)[i] = counter+i;
 			(_device->attr_spectrum_long_rw_read)[i] = (_device->attr_spectrum_long_ro_read)[i];
@@ -138,7 +156,10 @@ void pushthread::run(void *)
 		}
 		if(counter >= _device->number_of_events)
 			_device->set_state(Tango::OFF);
-		usleep(_device->period);
+		clock_gettime(CLOCK_MONOTONIC, &end_push);
+		time_to_sleep = timespec_diff(&end_push, &start_push);
+		time_to_sleep = timespec_diff(&period, &time_to_sleep);
+		nanosleep(&time_to_sleep, NULL);
 
 	}
 	DEBUG_STREAM << "pushthread::" << __func__ << ": exiting... " << endl;
